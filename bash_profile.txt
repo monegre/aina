@@ -29,13 +29,14 @@ alias ai="open -a adobe\ illustrator"
 ## FUNCTIONS ##
 ###############
 
-# New project
+# New
 # Creates a new project from $1 code repo in new $2 folder
 new(){
 cp -R -n -v ~/localhost/_new/$1 ~/localhost/$2
 }
 
-# Load work environment
+# Load 
+# Loads work environment
 load(){
 server;
 cd ~/localhost/$1;
@@ -43,7 +44,21 @@ open -a espresso $1.esproj;
 chrome http://localhost:8888;
 }
 
-# Go to URL
+# Go
+# Opens $1 uri in $2 browser. If no browser is passed, uses Safari by default 
 go(){
-safari http://$1
+if [ ! $2 ]; then
+    safari http://$1
+    return
+fi
+case $2 in
+    chrome)
+        chrome http://$1 ;;    
+    ff)
+        ff http://$1;;
+    safari)
+        safari http://$1;;
+    opera)
+        opera http://$1;;
+esac
 }
