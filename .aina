@@ -1,12 +1,12 @@
-#########################################
-## AINA : a .bash_profile for OSX love ##
-#########################################
+## AINA
+## a .bash_profile for OSX love
 
 ###########################
 ## VARS                  ##
 ## Replace with your own ##
 ###########################
 server="localhost"; # Your local server folder name (i.o.w. where you store your working projects)
+
 
 ###########
 ## ALIAS ##
@@ -65,6 +65,17 @@ aina(){
 			server;
 			cd ~/$server/$2;
 			open -a espresso $2.esproj;
-			chrome http://localhost:8888;;   
+			chrome http://localhost:8888;;
+		update)
+			# Update
+			case $2 in
+				wordpress)
+					cd ~/$server/aina/_new/tmp;
+					curl http://wordpress.org/latest.tar.gz > ~/$server/aina/_new/tmp/wp.tar.gz;
+					gunzip -c wp.tar.gz | tar xopf -; #gunzip -c wp.tar.gz > wp; #I'd like ton rename the file after decompress
+					cp -R -v ~/$server/aina/_new/tmp/wordpress ~/$server/aina/_new/wordpress;
+					rm -R wordpress wp.tar.gz;
+					echo "WordPress has been updated";;
+			esac  
 	esac
 }
