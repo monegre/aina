@@ -1,11 +1,7 @@
 ## AINA
 ## a .bash_profile for OSX love
 
-###########################
-## VARS                  ##
-## Replace with your own ##
-###########################
-server="localhost"; # Your local server folder name (i.o.w. where you store your working projects)
+
 
 
 ###########
