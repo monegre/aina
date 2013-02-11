@@ -53,12 +53,25 @@ go(){
 	esac
 }
 
+##########
+## AINA ##
+##########
+
+# Dirs
+new_dir="_new"; # Repos of code are stored here
+
+#Repos
+wp="wordpress";
+
 aina(){
+	if [ ! $1 ]; then
+	    echo "Welcome to Aina! Please, type a command";
+	fi
 	case $1 in
 	    new)
 	        # New
 	        # Creates a new project from $1 code repo in new $2 folder
-	        cp -R -n -v ~/$server/_new/$2 ~/$server/$3;;
+	        cp -R -n -v ~/$server/$new_dir/$2 ~/$server/$3;;
 		load)
 			# Load 
 			# Loads work environment
@@ -70,11 +83,11 @@ aina(){
 			# Update
 			case $2 in
 				wordpress)
-					cd ~/$server/aina/_new/tmp;
-					curl http://wordpress.org/latest.tar.gz > ~/$server/aina/_new/tmp/wp.tar.gz;
-					gunzip -c wp.tar.gz | tar xopf -; #gunzip -c wp.tar.gz > wp; #I'd like ton rename the file after decompress
-					cp -R -v ~/$server/aina/_new/tmp/wordpress ~/$server/aina/_new/wordpress;
-					rm -R wordpress wp.tar.gz;
+					cd ~/$server/aina/$new_dir/tmp;
+					curl http://wordpress.org/latest.tar.gz > ~/$server/aina/$new_dir/tmp/$wp.tar.gz;
+					gunzip -c $wp.tar.gz | tar xopf -; #gunzip -c wp.tar.gz > wp; #I'd like ton rename the file after decompress
+					cp -R -v ~/$server/aina/$new_dir/tmp/$wp ~/$server/aina/$new_dir/$wp;
+					rm -R $wp $wp.tar.gz;
 					echo "WordPress has been updated";;
 			esac  
 	esac
