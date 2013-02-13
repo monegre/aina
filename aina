@@ -11,6 +11,7 @@ sm_path="$PWD"
 . "${aina_root}/core/variables"
 . "${aina_root}/core/functions"
 . "${aina_root}/core/new"
+. "${aina_root}/core/load"
 
 ###########
 ## ALIAS ##
@@ -26,7 +27,6 @@ alias esp="open -a espresso"
 alias sublime="open -a sublime\ text\ 2"
 
 # Utils
-alias server="open -a mamp"
 alias less="open -a less"
 alias sequel="open -a sequel\ pro"
 
@@ -36,33 +36,12 @@ alias ai="open -a adobe\ illustrator"
 ##########
 ## AINA ##
 ##########
-
-
 aina(){
 	if [ ! $1 ]; then
 	    echo "Welcome to Aina! Please, type a command";
 	fi
-	case $1 in
-	    new)
-	        new
-	        ;;
-		load)
-			# Load 
-			# Loads work environment
-			server;
-			cd ~/$server/$2;
-			open -a espresso $2.esproj;
-			chrome http://localhost:8888;;
-		update)
-			# Update
-			case $2 in
-				wordpress)
-					cd ~/$server/aina/$new_dir/tmp;
-					curl http://wordpress.org/latest.tar.gz > ~/$server/aina/$new_dir/tmp/$wp.tar.gz;
-					gunzip -c $wp.tar.gz | tar xopf -; #gunzip -c wp.tar.gz > wp; #I'd like ton rename the file after decompress
-					cp -R -v ~/$server/aina/$new_dir/tmp/$wp ~/$server/aina/$new_dir/$wp;
-					rm -R $wp $wp.tar.gz;
-					echo "WordPress has been updated";;
-			esac
-	esac
+	if ! fn_exists $1; then
+        $i ""
+	fi
+	echo "Hey, $1 does not exist! Duh."
 }
