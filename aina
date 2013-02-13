@@ -87,7 +87,5 @@ aina(){
 					rm -R $wp $wp.tar.gz;
 					echo "WordPress has been updated";;
 			esac
-		*)
-			echo "This is not an option" 
 	esac
 }
