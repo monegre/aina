@@ -40,8 +40,9 @@ aina(){
 	if [ ! $1 ]; then
 	    echo "Welcome to Aina! Please, type a command";
 	fi
-	if ! fn_exists $1; then
-        $i ""
+	if fn_exists $1; then
+        $i "$@"
+        return
 	fi
 	echo "Hey, $1 does not exist! Duh."
 }
