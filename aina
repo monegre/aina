@@ -33,30 +33,6 @@ alias sequel="open -a sequel\ pro"
 # Adobe fellas
 alias ai="open -a adobe\ illustrator"
 
-
-###############
-## FUNCTIONS ##
-###############
-
-# Go
-# Opens $1 uri in $2 browser. If no browser is passed, uses Safari by default 
-go(){
-	if [ ! $2 ]; then
-	    open_browser $default_browser http://$1
-	    return
-	fi
-	case $2 in
-	    chrome)
-	        chrome http://$1 ;;    
-	    ff)
-	        ff http://$1;;
-	    safari)
-	        safari http://$1;;
-	    opera)
-	        opera http://$1;;
-	esac
-}
-
 ##########
 ## AINA ##
 ##########

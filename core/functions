@@ -1,5 +1,9 @@
 #!/bin/bash
 
+###############
+## FUNCTIONS ##
+###############
+
 # Opens browser
 open_browser(){
 	case $1 in
@@ -10,4 +14,18 @@ open_browser(){
 	esac
 	open -a $1
 	return
+}
+
+# Go
+# Opens uri $1 in browser $2. If no browser is passed, uses $default_browser 
+go(){
+	if [ ! $2 ]; then
+	    open_browser $default_browser http://$1
+	    return
+	fi
+	case $2 in
+	    chrome|firefox|safari|opera)
+	        open_browser $2 http://$1
+	        ;;    
+	esac
 }
