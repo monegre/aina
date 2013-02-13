@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Opens browser
+open_browser(){
+	case $1 in
+		chrome)
+			open -a google\ chrome
+			return
+			;;
+	esac
+	open -a $1
+	return
+}
