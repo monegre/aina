@@ -1,4 +1,7 @@
+#!/bin/bash
+
 # User configs
+
 # Replace with your own
 
-server="localhost"; # Your local server folder name (i.o.w. where you store your working projects)
+server="localhost" # Your local server folder name (i.o.w. where you store your working projects)

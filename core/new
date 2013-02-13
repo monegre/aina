@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# New
+# Creates a new project from $1 code repo in new $2 folder
+
+new(){
+	cp -R -n -v ~/$server/$new_dir/$1 ~/$server/$2
+}

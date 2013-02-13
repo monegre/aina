@@ -1,6 +1,12 @@
+#!/bin/bash
+
 # Variables
 
+# Repos
 wp="wordpress";
 cake="cakephp";
 tb="bootstrap";
 foundation="foundation";
+
+# Dirs
+new_dir="_new"; # Repos of code are stored here

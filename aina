@@ -1,8 +1,15 @@
+#!/bin/bash
+
 ## AINA
 ## a .bash_profile for OSX love
 
+initial_pwd="$PWD"
+aina_root="${initial_pwd}/aina"
+sm_path="$PWD"
 
-
+. "${aina_root}/config/user"
+. "${aina_root}/core/variables"
+. "${aina_root}/core/new"
 
 ###########
 ## ALIAS ##
@@ -53,11 +60,6 @@ go(){
 ## AINA ##
 ##########
 
-# Dirs
-new_dir="_new"; # Repos of code are stored here
-
-#Repos
-wp="wordpress";
 
 aina(){
 	if [ ! $1 ]; then
@@ -65,9 +67,8 @@ aina(){
 	fi
 	case $1 in
 	    new)
-	        # New
-	        # Creates a new project from $1 code repo in new $2 folder
-	        cp -R -n -v ~/$server/$new_dir/$2 ~/$server/$3;;
+	        new
+	        ;;
 		load)
 			# Load 
 			# Loads work environment
@@ -85,6 +86,8 @@ aina(){
 					cp -R -v ~/$server/aina/$new_dir/tmp/$wp ~/$server/aina/$new_dir/$wp;
 					rm -R $wp $wp.tar.gz;
 					echo "WordPress has been updated";;
-			esac  
+			esac
+		*)
+			echo "This is not an option" 
 	esac
 }
