@@ -9,6 +9,7 @@ sm_path="$PWD"
 
 . "${aina_root}/config/user"
 . "${aina_root}/core/variables"
+. "${aina_root}/core/functions"
 . "${aina_root}/core/new"
 
 ###########
@@ -41,7 +42,7 @@ alias ai="open -a adobe\ illustrator"
 # Opens $1 uri in $2 browser. If no browser is passed, uses Safari by default 
 go(){
 	if [ ! $2 ]; then
-	    safari http://$1
+	    open_browser $default_browser http://$1
 	    return
 	fi
 	case $2 in

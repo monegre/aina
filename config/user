@@ -5,3 +5,4 @@
 # Replace with your own
 
 server="localhost" # Your local server folder name (i.o.w. where you store your working projects)
+default_browser="firefox" # Your prefered browser
