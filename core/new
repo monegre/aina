@@ -2,7 +2,24 @@
 
 # New
 # Creates a new project from $1 code repo in new $2 folder
+# Files in the new dir will not be overwritten, in case it already exists
 
 new(){
-	cp -R -n -v ~/$server/$new_dir/$1 ~/$server/$2
+	if [ ! $1 ]; then
+		echo "No code repo was specified"	
+		return
+	fi
+	if [ ! $2 ]; then
+		echo "The new project name was not specified"	
+		return
+	fi
+	if [ ! -d "$aina_root/$new_dir" ]; then
+        echo "You haven't created the code repository yet."
+        return
+	fi
+	if [ ! -d "$aina_root/$new_dir/$1" ]; then
+        echo "There's no code repository with this name."
+        return
+	fi
+	cp -R -n -v $aina_root/$new_dir/$1 ~/$server_dir/$2
 }
