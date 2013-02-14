@@ -18,7 +18,7 @@ new(){
         return
 	fi
 	if [ ! -d "$aina_root/$new_dir/$1" ]; then
-        echo "There's no code repository with this name."
+        echo "There's no code repository named $1. Please, check your repos names ;-)"
         return
 	fi
 	cp -R -n -v $aina_root/$new_dir/$1 ~/$server_dir/$2
