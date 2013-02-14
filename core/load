@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Load 
+# Loads a work environment
+load(){
+	start_server
+	cd ~/$server_dir/$1;
+	open -a espresso $1.esproj;
+	go localhost:8888
+}
