@@ -4,30 +4,19 @@
 ## FUNCTIONS ##
 ###############
 
-# Opens browser
-open_browser(){
-	case $1 in
-		chrome)
-			open -a google\ chrome
-			return
-			;;
-	esac
-	open -a $1
-	return
-}
-
 # Go
 # Opens uri $1 in browser $2. If no browser is passed, uses $default_browser 
 go(){
 	if [ ! $2 ]; then
-	    open_browser $default_browser http://$1
+	    open -a $default_browser http://$1
 	    return
+	else
+		if [ $2 == 'chrome' ]; then
+	        open -a google\ chrome http://$1
+	    else
+	    	open -a $2 http://$1
+		fi
 	fi
-	case $2 in
-	    chrome|firefox|safari|opera)
-	        open_browser $2 http://$1
-	        ;;    
-	esac
 }
 
 # Function Exists
