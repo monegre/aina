@@ -3,10 +3,16 @@
 # Variables
 
 # Repos
-wp="wordpress";
-cake="cakephp";
-tb="bootstrap";
-foundation="foundation";
+app_tb="bootstrap";
+app_cake="cakephp";
+app_ci="codeigniter";
+app_foundation="foundation";
+app_wp="wordpress";
+
+# Update URIs
+tb_latest="http://twitter.github.com/bootstrap/assets/bootstrap.zip" # Bootstrap
+ci_latest="http://ellislab.com/codeigniter/download" # Code Igniter
+wp_latest="http://wordpress.org/latest.tar.gz" # WordPress
 
 # Dirs
 new_dir="_new"; # Repos of code are stored here
