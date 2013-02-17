@@ -1,0 +1,36 @@
+#!/bin/bash
+
+wp(){
+	if [ ! $1 ]; then
+	    echo "What do you want to do with WordPress? Please, type a command";
+	    return
+	fi
+	if fn_exists $1; then
+        $i "$@"
+        return
+	fi
+	echo "Hey, $1 is not a WordPress command! Duh."
+}
+
+# Generate
+# Creates something within a WP installation
+# $1 = what to generate (-p => Plugin, -t => Theme)
+# $2 = name of the thing to generate
+# $3 = WP installation
+generate(){
+	# Theme
+	if [ $1 == '-t' ]; then
+		mkdir ~/$server_dir/$3/wp-content/themes/$2
+		echo
+		echo "You have created a new theme $2 in WP installation $3"
+		echo
+	fi
+
+	# Plugin
+	if [ $1 == '-p' ]; then
+		mkdir ~/$server_dir/$3/wp-content/plugins/$2
+		echo
+		echo "You have created a new plugin $2 in WP installation $3"
+		echo
+	fi
+}
