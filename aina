@@ -13,7 +13,6 @@ sm_path="$PWD"
 . "${aina_root}/core/new"
 . "${aina_root}/core/load"
 
-# Lib
 # Libs
 . "${aina_root}/lib/wordpress"
 
@@ -44,7 +43,7 @@ aina(){
 	if [ ! $1 ]; then
 	    echo "Welcome to Aina! Please, type a command";
 	fi
-	if fn_exists $1; then
+	if [ fn_exists $1 ]; then
         $i "$@"
         return
 	fi
