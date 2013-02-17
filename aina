@@ -13,6 +13,10 @@ sm_path="$PWD"
 . "${aina_root}/core/new"
 . "${aina_root}/core/load"
 
+# Lib
+# Libs
+. "${aina_root}/lib/wordpress"
+
 ###########
 ## ALIAS ##
 ###########
