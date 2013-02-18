@@ -1,36 +1,213 @@
 #!/bin/bash
 
+# --------------------
+# Variables declaration
+# --------------------
+
+# If you left current directory blank, it will take the current directory 
+DIRECTORY="/Applications/MAMP/htdocs/"
+
+# wordpress url must be a zip to download
+WORDPRESS_URL="http://wordpress.org/latest.zip"
+
+# Theme must be a git repository
+THEME_URL="https://github.com/jeremycastelli/Jelli.git"
+
+# Local database with MAMP
+DB_USER='root'
+DB_PASSWORD='root'
+DB_HOST='localhost'
+
+# Local URL
+LOCAL_URL='http://localhost:8888/'
+
 wp(){
 	if [ ! $1 ]; then
 	    echo "What do you want to do with WordPress? Please, type a command";
 	    return
 	fi
 	if fn_exists $1; then
+		WP=true
         $i "$@"
         return
 	fi
 	echo "Hey, $1 is not a WordPress command! Duh."
 }
 
-# Generate
-# Creates something within a WP installation
-# $1 = what to generate (-p => Plugin, -t => Theme)
-# $2 = name of the thing to generate
-# $3 = WP installation
-generate(){
-	# Theme
-	if [ $1 == '-t' ]; then
-		mkdir ~/$server_dir/$3/wp-content/themes/$2
-		echo
-		echo "You have created a new theme $2 in WP installation $3"
-		echo
+install(){
+	if [[ $WP != true ]]; then
+		echo "$FUNCNAME is not an Aina command. Try [lib] $FUNCNAME instead"
+		return
 	fi
 
-	# Plugin
-	if [ $1 == '-p' ]; then
-		mkdir ~/$server_dir/$3/wp-content/plugins/$2
-		echo
-		echo "You have created a new plugin $2 in WP installation $3"
-		echo
+	echo "Project Name:"
+	read PROJECT_NAME
+	while [[ -z "$PROJECT_NAME" ]]; do
+		echo "Please, type your project name:"
+		read PROJECT_NAME
+	done
+	
+	echo "Database Name:"
+	read DB_NAME
+	while [[ -z "$DB_NAME" ]]; do
+		echo "Please, type a name for this project database:"
+		read DB_NAME
+	done
+
+	echo "Database prefix (hit Y if you want the default wp_):"
+	read DB_PREFIX
+	while [[ -z "$DB_PREFIX" ]]; do
+		echo "Please, type a prefix for the database tables, or hit Y if you want the default wp_:"
+		read DB_PREFIX
+		if [[ $DB_PREFIX == "y" || $DB_PREFIX == "Y" ]]; then
+			$DB_PREFIX='wp_'
+		fi
+	done
+	
+	echo "Installating WordPress..."
+	new wordpress $PROJECT_NAME
+	
+	echo "Creating database $DB_NAME"
+	/Applications/MAMP/Library/bin/mysql --host=$DB_HOST -u$DB_USER -p$DB_PASSWORD -e "create database "$DB_NAME
+
+	echo "Creating wp-config..."
+	touch ~/$server_dir/$PROJECT_NAME/wp-config.php
+	echo "<?php
+/**
+ * The base configurations of the WordPress.
+ *
+ * This file has the following configurations: MySQL settings, Table Prefix,
+ * Secret Keys, WordPress Language, and ABSPATH. You can find more information
+ * by visiting {@link http://codex.wordpress.org/Editing_wp-config.php Editing
+ * wp-config.php} Codex page. You can get the MySQL settings from your web host.
+ *
+ * This file is used by the wp-config.php creation script during the
+ * installation. You don't have to use the web site, you can just copy this file
+ * to '"wp-config.php"' and fill in the values.
+ *
+ * @package WordPress
+ */
+
+// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', '"$DB_NAME"');
+
+/** MySQL database username */
+define('DB_USER', '"$DB_USER"');
+
+/** MySQL database password */
+define('DB_PASSWORD', '"$DB_PASSWORD"');
+
+/** MySQL hostname */
+define('DB_HOST', '"$DB_HOST"');
+
+/** Database Charset to use in creating database tables. */
+define('DB_CHARSET', 'utf8');
+
+/** The Database Collate type. Don't change this if in doubt. */
+define('DB_COLLATE', '');
+
+/**#@+
+ * Authentication Unique Keys and Salts.
+ *
+ * Change these to different unique phrases!
+ * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
+ * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+ *
+ * @since 2.6.0
+ */
+define('AUTH_KEY',         'put your unique phrase here');
+define('SECURE_AUTH_KEY',  'put your unique phrase here');
+define('LOGGED_IN_KEY',    'put your unique phrase here');
+define('NONCE_KEY',        'put your unique phrase here');
+define('AUTH_SALT',        'put your unique phrase here');
+define('SECURE_AUTH_SALT', 'put your unique phrase here');
+define('LOGGED_IN_SALT',   'put your unique phrase here');
+define('NONCE_SALT',       'put your unique phrase here');
+
+/**#@-*/
+
+/**
+ * WordPress Database Table prefix.
+ *
+ * You can have multiple installations in one database if you give each a unique
+ * prefix. Only numbers, letters, and underscores please!
+ */
+$table_prefix  = '"$DB_PREFIX"';
+
+/**
+ * WordPress Localized Language, defaults to English.
+ *
+ * Change this to localize WordPress. A corresponding MO file for the chosen
+ * language must be installed to wp-content/languages. For example, install
+ * de_DE.mo to wp-content/languages and set WPLANG to 'de_DE' to enable German
+ * language support.
+ */
+define('WPLANG', '');
+
+/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ */
+define('WP_DEBUG', false);
+
+/* That's all, stop editing! Happy blogging. */
+
+/** Absolute path to the WordPress directory. */
+if ( !defined('ABSPATH') )
+	define('ABSPATH', dirname(__FILE__) . '/');
+
+/** Sets up WordPress vars and included files. */
+require_once(ABSPATH . 'wp-settings.php');" > ~/$server_dir/$PROJECT_NAME/wp-config.php
+
+	echo "Hooray! You successfully installed WordPress."
+}
+
+# Generate
+# Creates something within a WP installation
+# $1 = What kind of thing we want to generate (-p => Plugin, -t => Theme)
+# $2 = Name of the thing to generate
+# $3 = WP installation name
+generate(){
+	if [[ $WP != true ]]; then
+		echo "$FUNCNAME is not an Aina command. Try [lib] $FUNCNAME instead"
+		return
 	fi
+	if [[ -z "$1" ]]; then
+		echo "What would you like to generate?"
+		echo "-t [A New Theme], -p [A New Plugin]"
+	fi
+	case $1 in
+		-t ) # Theme
+			if [[ ! $2 ]]; then
+				echo "Theme Name:"
+				read THEME_NAME
+				while [[ -z "$THEME_NAME" ]]; do
+					echo "Please, type a Theme Name:"
+					read THEME_NAME
+				done
+				echo "Project Name:"
+				read PROJECT_NAME
+				while [[ -z "$PROJECT_NAME" ]]; do
+					echo "Please, type your project name:"
+					read PROJECT_NAME
+				done
+				mkdir ~/$server_dir/$PROJECT_NAME/wp-content/themes/$THEME_NAME
+				return
+			fi
+			mkdir ~/$server_dir/$3/wp-content/themes/$2
+			echo
+			echo "You have created a new theme $2 in WP installation $3"
+			echo
+			;;
+		-p ) # Plugin
+			mkdir ~/$server_dir/$3/wp-content/plugins/$2
+			echo
+			echo "You have created a new plugin $2 in WP installation $3"
+			echo
+			;;			
+	esac
 }
