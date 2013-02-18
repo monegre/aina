@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Update
+update(){
+	case $2 in
+		wordpress)
+			cd ~/$server/aina/$new_dir/tmp;
+			curl $wp_latest > ~/$server/aina/$new_dir/tmp/$wp.tar.gz;
+			gunzip -c $wp.tar.gz | tar xopf -; #gunzip -c wp.tar.gz > wp; #I'd like ton rename the file after decompress
+			cp -R -v ~/$server/aina/$new_dir/tmp/$wp ~/$server/aina/$new_dir/$wp;
+			rm -R $wp $wp.tar.gz;
+			echo "WordPress has been updated";;
+	esac	
+}
