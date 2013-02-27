@@ -7,14 +7,22 @@ initial_pwd="$PWD"
 aina_root="${initial_pwd}/aina"
 sm_path="$PWD"
 
+#
+# Include user configs
+#
 . "${aina_root}/config/user"
-. "${aina_root}/core/variables"
-. "${aina_root}/core/functions"
-. "${aina_root}/core/new"
-. "${aina_root}/core/load"
+
+#
+# Include core files
+#
+declare -a CORE_FILES=( variables functions new load )
+
+for core_file in ${CORE_FILES[@]}; do
+	. "${aina_root}/core/${core_file}"
+done
 
 # Libs
-. "${aina_root}/lib/wordpress"
+. "${aina_root}/lib/wordpress/init"
 
 ###########
 ## ALIAS ##
