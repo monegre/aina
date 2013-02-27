@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#
+# WordPress Lib
+# Version 0.1
+# Date: 2013/02/28
+#
+
+wp(){
+	if [ ! $1 ]; then
+	    echo "What do you want to do with WordPress? Please, type a command";
+	    echo "[install], [generate]"
+	    return
+	fi
+
+	. "${aina_root}/lib/wordpress/vars"
+	. "${aina_root}/lib/wordpress/config"
+	. "${aina_root}/lib/wordpress/generate"
+	. "${aina_root}/lib/wordpress/install"
+
+	if fn_exists $1; then
+		WP=true
+        $i "$@"
+        return
+	fi
+	echo "Hey, $1 is not a WordPress command! Duh."
+}

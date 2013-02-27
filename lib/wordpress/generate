@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Generate
+# Creates something within a WP installation
+# $1 = What kind of thing we want to generate (-p => Plugin, -t => Theme)
+# $2 = Name of the thing to generate
+# $3 = WP installation name
+generate(){
+	if [[ $WP != true ]]; then
+		echo "$FUNCNAME is not an Aina command. Try [lib] $FUNCNAME instead"
+		return
+	fi
+	if [[ -z "$1" ]]; then
+		echo "What would you like to generate?"
+		echo "-t [A New Theme], -p [A New Plugin]"
+	fi
+	case $1 in
+		-t ) # Theme
+			if [[ ! $2 ]]; then
+				echo "Theme Name:"
+				read THEME_NAME
+				while [[ -z "$THEME_NAME" ]]; do
+					echo "Please, type a Theme Name:"
+					read THEME_NAME
+				done
+				echo "Project Name:"
+				read PROJECT_NAME
+				while [[ -z "$PROJECT_NAME" ]]; do
+					echo "Please, type your project name:"
+					read PROJECT_NAME
+				done
+				mkdir ~/$server_dir/$PROJECT_NAME/wp-content/themes/$THEME_NAME
+				return
+			fi
+			mkdir ~/$server_dir/$3/wp-content/themes/$2
+			echo
+			echo "You have created a new theme $2 in WP installation $3"
+			echo
+			;;
+		-p ) # Plugin
+			mkdir ~/$server_dir/$3/wp-content/plugins/$2
+			echo
+			echo "You have created a new plugin $2 in WP installation $3"
+			echo
+			;;			
+	esac
+}

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+WP_CONTENT='wp-content'
+
+WP_THEMES='themes'
+
+WP_THEMES_PATH="$WP_CONTENT/$WP_THEMES"
+
+WP_PLUGINS_PATH="$WP_CONTENT/plugins"
+
+declare -a DESTROY_THEMES=( twentyten twentyeleven twentytwelve )

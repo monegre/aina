@@ -1,44 +1,18 @@
 #!/bin/bash
 
-# --------------------
-# Variables declaration
-# --------------------
-
-# If you left current directory blank, it will take the current directory 
-DIRECTORY="/Applications/MAMP/htdocs/"
-
-# wordpress url must be a zip to download
-WORDPRESS_URL="http://wordpress.org/latest.zip"
-
-# Theme must be a git repository
-THEME_URL="https://github.com/jeremycastelli/Jelli.git"
-
-# Local database with MAMP
-DB_USER='root'
-DB_PASSWORD='root'
-DB_HOST='localhost'
-
-# Local URL
-LOCAL_URL='http://localhost:8888/'
-
-wp(){
-	if [ ! $1 ]; then
-	    echo "What do you want to do with WordPress? Please, type a command";
-	    return
-	fi
-	if fn_exists $1; then
-		WP=true
-        $i "$@"
-        return
-	fi
-	echo "Hey, $1 is not a WordPress command! Duh."
-}
-
-install(){
+install()
+{
 	if [[ $WP != true ]]; then
 		echo "$FUNCNAME is not an Aina command. Try [lib] $FUNCNAME instead"
 		return
 	fi
+
+	# echo "This script will:"
+	# echo "1. Make a new install of WordPress with the project name"
+	# echo "2. Create a database for the project and set the wp-config.php"
+	# echo "3. Init a Git repository"
+	# echo
+	# echo "Do you wish to proceed? (Y/N)"
 
 	echo "Project Name:"
 	read PROJECT_NAME
@@ -46,7 +20,13 @@ install(){
 		echo "Please, type your project name:"
 		read PROJECT_NAME
 	done
-	
+
+	#
+	# Set PROJECT_PATH & THEME_PATH for reuse
+	#
+	local PROJECT_PATH=~/$server_dir/$PROJECT_NAME
+	local THEME_PATH=$PROJECT_PATH/$WP_THEMES_PATH/$PROJECT_NAME
+
 	echo "Database Name:"
 	read DB_NAME
 	while [[ -z "$DB_NAME" ]]; do
@@ -59,17 +39,58 @@ install(){
 	while [[ -z "$DB_PREFIX" ]]; do
 		echo "Please, type a prefix for the database tables, or hit Y if you want the default wp_:"
 		read DB_PREFIX
-		if [[ $DB_PREFIX == "y" || $DB_PREFIX == "Y" ]]; then
-			$DB_PREFIX='wp_'
-		fi
 	done
+	# Set DB_PREFIX to default if that's the case
+	if [[ $DB_PREFIX =~ ^[Yy]$ ]]; then
+		DB_PREFIX='wp_'
+	fi
+
+	echo "Do you want Debug set to true? (Y/N)"
+	read WP_DEBUG
+	while [[ -z "$WP_DEBUG" ]]; do
+		echo "Do you want Debug set to true? (Y/N)"
+		read DB_PREFIX
+	done
+	if [[ $WP_DEBUG =~ ^[Yy]$ ]]; then
+		WP_DEBUG="true"
+	else
+		WP_DEBUG="false"
+	fi
 	
+	# 
+	# Install WordPress
+	# 
 	echo "Installating WordPress..."
 	new wordpress $PROJECT_NAME
+
+	# 
+	# Fetch base theme
+	# 
+	echo 'Remove default themes and plugins...'
+	git clone $THEME_URL $THEME_PATH
+
+	# 
+	# Remove default themes
+	#
+	echo 'Remove default themes and plugins...'
+	for name in ${DESTROY_THEMES[@]}; do
+		rm -r $PROJECT_PATH/$WP_THEMES_PATH/$name
+	done
+
+	#
+	# Remove Hello Dolly plugin
+	#
+	rm $PROJECT_PATH/$WP_PLUGINS_PATH/hello.php
 	
+	#
+	# Create Database
+	#
 	echo "Creating database $DB_NAME"
 	/Applications/MAMP/Library/bin/mysql --host=$DB_HOST -u$DB_USER -p$DB_PASSWORD -e "create database "$DB_NAME
 
+	#
+	# Create wp-config
+	#
 	echo "Creating wp-config..."
 	touch ~/$server_dir/$PROJECT_NAME/wp-config.php
 	echo "<?php
@@ -83,7 +104,7 @@ install(){
  *
  * This file is used by the wp-config.php creation script during the
  * installation. You don't have to use the web site, you can just copy this file
- * to '"wp-config.php"' and fill in the values.
+ * to 'wp-config.php' and fill in the values.
  *
  * @package WordPress
  */
@@ -133,7 +154,7 @@ define('NONCE_SALT',       'put your unique phrase here');
  * You can have multiple installations in one database if you give each a unique
  * prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix  = '"$DB_PREFIX"';
+\$table_prefix  = '"$DB_PREFIX"';
 
 /**
  * WordPress Localized Language, defaults to English.
@@ -152,7 +173,7 @@ define('WPLANG', '');
  * It is strongly recommended that plugin and theme developers use WP_DEBUG
  * in their development environments.
  */
-define('WP_DEBUG', false);
+define('WP_DEBUG', "$WP_DEBUG");
 
 /* That's all, stop editing! Happy blogging. */
 
@@ -163,51 +184,8 @@ if ( !defined('ABSPATH') )
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');" > ~/$server_dir/$PROJECT_NAME/wp-config.php
 
+	#
+	# Done
+	#
 	echo "Hooray! You successfully installed WordPress."
-}
-
-# Generate
-# Creates something within a WP installation
-# $1 = What kind of thing we want to generate (-p => Plugin, -t => Theme)
-# $2 = Name of the thing to generate
-# $3 = WP installation name
-generate(){
-	if [[ $WP != true ]]; then
-		echo "$FUNCNAME is not an Aina command. Try [lib] $FUNCNAME instead"
-		return
-	fi
-	if [[ -z "$1" ]]; then
-		echo "What would you like to generate?"
-		echo "-t [A New Theme], -p [A New Plugin]"
-	fi
-	case $1 in
-		-t ) # Theme
-			if [[ ! $2 ]]; then
-				echo "Theme Name:"
-				read THEME_NAME
-				while [[ -z "$THEME_NAME" ]]; do
-					echo "Please, type a Theme Name:"
-					read THEME_NAME
-				done
-				echo "Project Name:"
-				read PROJECT_NAME
-				while [[ -z "$PROJECT_NAME" ]]; do
-					echo "Please, type your project name:"
-					read PROJECT_NAME
-				done
-				mkdir ~/$server_dir/$PROJECT_NAME/wp-content/themes/$THEME_NAME
-				return
-			fi
-			mkdir ~/$server_dir/$3/wp-content/themes/$2
-			echo
-			echo "You have created a new theme $2 in WP installation $3"
-			echo
-			;;
-		-p ) # Plugin
-			mkdir ~/$server_dir/$3/wp-content/plugins/$2
-			echo
-			echo "You have created a new plugin $2 in WP installation $3"
-			echo
-			;;			
-	esac
 }
