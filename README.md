@@ -9,9 +9,7 @@ Still working on it.
 **Please notice: this script is under development so shit could happen. Use it at your own risk.**. However: 
 
 ### Installation
-1. Either download the files and place them manually in your-user/aina
-
-or `$ git clone https://github.com/carlesjove/aina.git ~/aina`
+1. Either download the files and place them manually in user/aina or simply `$ git clone https://github.com/carlesjove/aina.git ~/aina`
 
 2. Include Aina in your .bash_profile:
 `source ~/aina/aina`
