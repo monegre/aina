@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#
+# Credits: 
+# This function is almost a copy&paste of Jeremy Castelli's WP New Project script
+# https://github.com/jeremycastelli/Wordpress-new-project-config
+#
+
 install()
 {
 	if [[ $WP != true ]]; then
@@ -67,7 +73,7 @@ install()
 	# Fetch base theme
 	# 
 	echo 'Remove default themes and plugins...'
-	git clone $THEME_URL $THEME_PATH
+	git clone $STARTER_THEME_URL $THEME_PATH
 
 	# 
 	# Remove default themes
