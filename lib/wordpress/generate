@@ -12,7 +12,7 @@ generate(){
 	fi
 	if [[ -z "$1" ]]; then
 		echo "What would you like to generate?"
-		echo "-t [A New Theme], -p [A New Plugin]"
+		echo "-t [A New Theme], -p [A New Plugin], -pt [A New Post Type]"
 	fi
 	case $1 in
 		-t ) # Theme
@@ -37,11 +37,167 @@ generate(){
 			echo "You have created a new theme $2 in WP installation $3"
 			echo
 			;;
-		-p ) # Plugin
+		-p | plugin ) # Plugin
 			mkdir ~/$server_dir/$3/wp-content/plugins/$2
 			echo
 			echo "You have created a new plugin $2 in WP installation $3"
 			echo
-			;;			
+			;;
+		-pt | post_type ) # Post Type
+		    post_type "$@"
+			;;	
 	esac
+}
+
+# Post Type
+# Generate a custom Post Type $1 in theme $2
+post_type(){
+	#
+	# Promt por the project name
+	#
+	echo "Project Name:"
+	read PROJECT_NAME
+	while [[ -z "$PROJECT_NAME" ]]; do
+		echo "Please, type your project name"
+		read PROJECT_NAME
+	done
+	#
+	# Set PROJECT_PATH & THEME_PATH for reuse
+	#
+	local POST_TYPE=$2
+	local THEME_NAME=$3
+	local PROJECT_PATH=~/$server_dir/$PROJECT_NAME
+	local THEME_PATH=$PROJECT_PATH/$WP_THEMES_PATH/$THEME_NAME
+
+	#
+	# Manual or automatic
+	#
+	echo "How do you want to proceed? Automatic(A) or Manual(M) ?"
+	read PROCESS
+	while [[ -z "$PROCESS" ]]; do
+		echo "Please, specify if you want an Automatic (A) with default settings, or a Manual (M)"
+		read PROCESS
+	done
+
+	if [[ $PROCESS == 'A' ]]; then
+		# Labels
+		local PT_NAME='Productos'
+		local PT_SINGULAR_NAME='Producto Item'
+		local PT_ADD_NEW="'New producto', 'Producto item'"
+		local PT_ADD_NEW_ITEM='Add New producto'
+		local PT_EDIT_ITEM='Edit producto'
+		local PT_NEW_ITEM='New producto'
+		local PT_VIEW_ITEM='Ves al producto'
+		local PT_SEARCH_ITEMS='Search Producto'
+		local PT_NOT_FOUND='Nothing found'
+		local PT_NOT_FOUND_IN_TRASH='Nothing found in Trash'
+		local PT_PARENT_ITEM_COLON=''
+
+		# Arguments
+		local PT_labels="\$labels"
+		local PT_public="true"
+		local PT_publicly_queryable="true"
+		local PT_show_ui="true"
+		local PT_query_var="true"
+		local PT_menu_icon 			=> get_stylesheet_directory_uri() . '/pt_producto_icon.png',
+		local PT_rewrite="true"
+		local PT_capability_type="page"
+		local PT_hierarchical="true"
+		local PT_menu_position="null"
+		local PT_supports 				=> array('title','editor','thumbnail','excerpt'),
+	elif [[ $PROCESS == 'M' ]]; then
+		#statements
+	fi
+	
+	# Attempt to create a custom dir
+	echo "Create custom dir..."
+	if [ ! -d "$THEME_PATH/custom" ]; then
+	    mkdir "$THEME_PATH/custom"
+	fi
+
+	echo "Generating $POST_TYPE post type..."
+	touch "$THEME_PATH"/custom/"$POST_TYPE".php
+	echo "<?php
+
+/**
+ * Custom Post Type: "$POST_TYPE"
+ * Generated with Aina. Version "$AINA_VERSION"
+ */
+
+/* "$POST_TYPE" Properties */
+function product_register() {
+	$labels = array(
+		'name' 					=> _x('Productos', 'post type general name'),
+		'singular_name' 		=> _x('Producto Item', 'post type singular name'),
+		'add_new' 				=> _x('New producto', 'Producto item'),
+		'add_new_item' 			=> __('Add New producto'),
+		'edit_item' 			=> __('Edit producto'),
+		'new_item' 				=> __('New producto'),
+		'view_item' 			=> __('Ves al producto'),
+		'search_items' 			=> __('Search Producto'),
+		'not_found' 		 	=> __('Nothing found'),
+		'not_found_in_trash' 	=> __('Nothing found in Trash'),
+		'parent_item_colon'  	=> '',
+	);
+	$args = array(
+		'labels' 				=> $labels,
+		'public' 				=> true,
+		'publicly_queryable' 	=> true,
+		'show_ui' 				=> true,
+		'query_var' 			=> true,
+		'menu_icon' 			=> get_stylesheet_directory_uri() . '/pt_producto_icon.png',
+		'rewrite' 				=> true,
+		'capability_type' 		=> 'page',
+		'hierarchical' 			=> true,
+		'menu_position' 		=> null,
+		'supports' 				=> array('title','editor','thumbnail','excerpt'),
+	  ); 
+	register_post_type( 'producto' , $args );
+}
+
+add_action('init', 'product_register');
+
+
+/* "$POST_TYPE" Taxonomy */
+register_taxonomy( 
+	'Tipo de producto', 
+	'"$POST_TYPE"', 
+	array(
+		'hierarchical' 		=> true, 
+		'label' 			=> 'Tipo de producto', 
+		'singular_label' 	=> 'Tipo de producto', 
+		'rewrite' 			=> true,
+	)
+);
+
+/* Custom data fields */
+add_action('admin_init', 'admin_init');
+ 
+// add_meta_box( $id, $title, $callback, $page, $context, $priority );
+function admin_init(){
+  add_meta_box('datos_producto', 'Datos del producto', 'producto_meta', 'producto', 'normal', 'low');
+}
+ 
+function producto_meta() {
+	global $post;
+	$custom 			= get_post_custom($post->ID);
+	$precio_original 	= $custom['precio_original'][0];
+	
+	?>
+	
+	<p><label>Precio original</label><br />
+	<input type=\"text\" name=\"precio_original\" value=\"<?php echo $precio_original; ?>\" /></p>
+	
+	<?php
+}
+
+/* Save "$POST_TYPE" */
+function save_producto(){
+  global $post;
+ 
+  update_post_meta($post->ID, 'precio_original', $_POST['precio_original']);
+
+}
+add_action('save_post', 'save_producto');" > "$THEME_PATH/custom/$POST_TYPE.php"
+
 }

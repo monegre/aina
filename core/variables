@@ -2,6 +2,8 @@
 
 # Variables
 
+AINA_VERSION="0.1"
+
 # Repos
 app_tb="bootstrap";
 app_cake="cakephp";
