@@ -14,11 +14,7 @@ Still working on it.
 or `$ git clone https://github.com/carlesjove/aina.git ~/aina`
 
 2. Include Aina in your .bash_profile:
-`
-# Load Aina
-
-source ~/aina/aina
-`
+`source ~/aina/aina`
 
 ### How to use
 Launch Terminal and type `aina [command]`
