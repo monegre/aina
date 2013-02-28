@@ -6,7 +6,7 @@ A bash script for OSX love
 Aina is a bash script with aliases and commands to make your dev work a little bit faster. 
 Still working on it.
 
-**I do not recommend using this yet**. However: 
+**Please notice: this script is under development so shit could happen. Use it at your own risk.**. However: 
 
 ### Installation
 1. Either download the files and place them manually in your-user/aina
