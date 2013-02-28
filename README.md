@@ -26,5 +26,8 @@ Launch Terminal and type `aina [command]`
 2. Create a new [X] project from a code repo
 `$ aina new [repo]`
 
+3. Visit some website
+`$ aina go example.com`
+
 ### Contribute
 Wanna contribute or tell me something about it? Either send me an email or open an issue. I'll be glad to hear from you.
