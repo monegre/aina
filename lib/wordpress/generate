@@ -52,71 +52,103 @@ generate(){
 # Post Type
 # Generate a custom Post Type $1 in theme $2
 post_type(){
+	
+	#
+	# Set variables
+	#
+	local DIR_POST_TYPES="post-types"
+	#local POST_TYPE=$2
+
+	#
+	# Promt por the post type name
+	#
+	echo "Post Type Name (singular):"
+	read POST_TYPE
+	if [[ -z "$POST_TYPE" ]]; then
+		echo "Please, type your post type's name"
+		read POST_TYPE
+	fi
+
 	#
 	# Promt por the project name
 	#
 	echo "Project Name:"
 	read PROJECT_NAME
 	while [[ -z "$PROJECT_NAME" ]]; do
-		echo "Please, type your project name"
+		echo "Please, type your project's name"
 		read PROJECT_NAME
 	done
+
 	#
-	# Set PROJECT_PATH & THEME_PATH for reuse
+	# Promt por the project name
 	#
-	local POST_TYPE=$2
-	local THEME_NAME=$3
+	echo "Theme Name:"
+	read THEME_NAME
+	while [[ -z "$THEME_NAME" ]]; do
+		echo "Please, type your theme's name"
+		read THEME_NAME
+	done
+
+	
+	#local THEME_NAME=$3
 	local PROJECT_PATH=~/$server_dir/$PROJECT_NAME
 	local THEME_PATH=$PROJECT_PATH/$WP_THEMES_PATH/$THEME_NAME
 
 	#
-	# Manual or automatic
+	# TO DO
 	#
-	echo "How do you want to proceed? Automatic(A) or Manual(M) ?"
-	read PROCESS
-	while [[ -z "$PROCESS" ]]; do
-		echo "Please, specify if you want an Automatic (A) with default settings, or a Manual (M)"
-		read PROCESS
-	done
+	# Manual or automatic 
+	#
+	# echo "How do you want to proceed? Automatic(A) or Manual(M) ?"
+	# read PROCESS
+	# while [[ -z "$PROCESS" ]]; do
+	# 	echo "Do you want an Automatic (A) with default settings, or a Manual (M)"
+	# 	read PROCESS
+	# done
+	local PROCESS="A"
 
-	if [[ $PROCESS == 'A' ]]; then
+	local UC_POST_TYPE=$(ucfirst $POST_TYPE)
+	#echo $UC_POST_TYPE # this works
+
+	if [[ $PROCESS =~ ^[Aa]$ ]]; then
 		# Labels
-		local PT_NAME='Productos'
-		local PT_SINGULAR_NAME='Producto Item'
-		local PT_ADD_NEW="'New producto', 'Producto item'"
-		local PT_ADD_NEW_ITEM='Add New producto'
-		local PT_EDIT_ITEM='Edit producto'
-		local PT_NEW_ITEM='New producto'
-		local PT_VIEW_ITEM='Ves al producto'
-		local PT_SEARCH_ITEMS='Search Producto'
+		local PT_NAME="${UC_POST_TYPE}s" # but this gets the variable name printed, instead of the value
+		local PT_SINGULAR_NAME="$UC_POST_TYPE Item"
+		local PT_ADD_NEW="New $UC_POST_TYPE"
+		local PT_ADD_NEW_ITEM="Add New $UC_POST_TYPE"
+		local PT_EDIT_ITEM="Edit $UC_POST_TYPE"
+		local PT_NEW_ITEM="New $UC_POST_TYPE"
+		local PT_VIEW_ITEM="View $UC_POST_TYPE"
+		local PT_SEARCH_ITEMS="Search $UC_POST_TYPE"
 		local PT_NOT_FOUND='Nothing found'
 		local PT_NOT_FOUND_IN_TRASH='Nothing found in Trash'
 		local PT_PARENT_ITEM_COLON=''
 
 		# Arguments
-		local PT_labels="\$labels"
-		local PT_public="true"
-		local PT_publicly_queryable="true"
-		local PT_show_ui="true"
-		local PT_query_var="true"
-		local PT_menu_icon 			=> get_stylesheet_directory_uri() . '/pt_producto_icon.png',
-		local PT_rewrite="true"
-		local PT_capability_type="page"
-		local PT_hierarchical="true"
-		local PT_menu_position="null"
-		local PT_supports 				=> array('title','editor','thumbnail','excerpt'),
-	elif [[ $PROCESS == 'M' ]]; then
+		local PT_LABELS="\$labels"
+		local PT_PUBLIC="true"
+		local PT_PUBLICLY_QUERYABLE="true"
+		local PT_SHOW_UI="true"
+		local PT_QUERY_VAR="true"
+		local PT_MENU_ICON="get_stylesheet_directory_uri() . '/pt_producto_icon.png'"
+		local PT_REWRITE="true"
+		local PT_CAPABILITY_TYPE="page"
+		local PT_HIERARCHICAL="true"
+		local PT_HAS_ARCHIVE="true"
+		local PT_MENU_POSITION="null"
+		local PT_SUPPORTS="array('title','editor','thumbnail','excerpt')"
+	# elif [[ $PROCESS == 'M' ]]; then
 		#statements
 	fi
-	
+
 	# Attempt to create a custom dir
-	echo "Create custom dir..."
-	if [ ! -d "$THEME_PATH/custom" ]; then
-	    mkdir "$THEME_PATH/custom"
+	echo "Create $DIR_POST_TYPES dir..."
+	if [ ! -d "$THEME_PATH/$DIR_POST_TYPES" ]; then
+	    mkdir "$THEME_PATH/$DIR_POST_TYPES"
 	fi
 
 	echo "Generating $POST_TYPE post type..."
-	touch "$THEME_PATH"/custom/"$POST_TYPE".php
+	touch "$THEME_PATH/$DIR_POST_TYPES/$POST_TYPE".php
 	echo "<?php
 
 /**
@@ -125,79 +157,49 @@ post_type(){
  */
 
 /* "$POST_TYPE" Properties */
-function product_register() {
-	$labels = array(
-		'name' 					=> _x('Productos', 'post type general name'),
-		'singular_name' 		=> _x('Producto Item', 'post type singular name'),
-		'add_new' 				=> _x('New producto', 'Producto item'),
-		'add_new_item' 			=> __('Add New producto'),
-		'edit_item' 			=> __('Edit producto'),
-		'new_item' 				=> __('New producto'),
-		'view_item' 			=> __('Ves al producto'),
-		'search_items' 			=> __('Search Producto'),
-		'not_found' 		 	=> __('Nothing found'),
-		'not_found_in_trash' 	=> __('Nothing found in Trash'),
-		'parent_item_colon'  	=> '',
+function "$POST_TYPE"_register() {
+	\$labels = array(
+		'name' 					=> _x('"$PT_NAME"'),
+		'singular_name' 		=> _x('"$PT_SINGULAR_NAME"'),
+		'add_new' 				=> _x('"$PT_ADD_NEW"'),
+		'add_new_item' 			=> __('"$PT_ADD_NEW_ITEM"'),
+		'edit_item' 			=> __('"$PT_EDIT_ITEM"'),
+		'new_item' 				=> __('"$PT_NEW_ITEM"'),
+		'view_item' 			=> __('"$PT_VIEW_ITEM"'),
+		'search_items' 			=> __('"$PT_SEARCH_ITEMS"'),
+		'not_found' 		 	=> __('"$PT_NOT_FOUND"'),
+		'not_found_in_trash' 	=> __('"$PT_NOT_FOUND_IN_TRASH"'),
+		'parent_item_colon'  	=> '"$PT_PARENT_ITEM_COLON"',
 	);
-	$args = array(
-		'labels' 				=> $labels,
-		'public' 				=> true,
-		'publicly_queryable' 	=> true,
-		'show_ui' 				=> true,
-		'query_var' 			=> true,
-		'menu_icon' 			=> get_stylesheet_directory_uri() . '/pt_producto_icon.png',
-		'rewrite' 				=> true,
-		'capability_type' 		=> 'page',
-		'hierarchical' 			=> true,
-		'menu_position' 		=> null,
-		'supports' 				=> array('title','editor','thumbnail','excerpt'),
+	\$args = array(
+		'labels' 				=> \$labels,
+		'public' 				=> "$PT_PUBLIC",
+		'publicly_queryable' 	=> "$PT_PUBLICLY_QUERYABLE",
+		'show_ui' 				=> "$PT_SHOW_UI",
+		'query_var' 			=> "$PT_QUERY_VAR",
+		'menu_icon' 			=> false, // get_stylesheet_directory_uri() . '/your_pt_icon_here.png'
+		'rewrite' 				=> "$PT_REWRITE",
+		'capability_type' 		=> '"$PT_CAPABILITY_TYPE"',
+		'hierarchical' 			=> "$PT_HIERARCHICAL",
+		'has_archive' 			=> "$PT_HAS_ARCHIVE",
+		'menu_position' 		=> "$PT_MENU_POSITION",
+		'supports' 				=> "$PT_SUPPORTS",
 	  ); 
-	register_post_type( 'producto' , $args );
+	register_post_type( '"$POST_TYPE"' , \$args );
 }
 
-add_action('init', 'product_register');
+add_action('init', '"$POST_TYPE"_register');
 
 
-/* "$POST_TYPE" Taxonomy */
-register_taxonomy( 
-	'Tipo de producto', 
-	'"$POST_TYPE"', 
+/* "$UC_POST_TYPE" Taxonomy */
+register_taxonomy(
+	'Categories', 
+	array('"$POST_TYPE"'), 
 	array(
-		'hierarchical' 		=> true, 
-		'label' 			=> 'Tipo de producto', 
-		'singular_label' 	=> 'Tipo de producto', 
-		'rewrite' 			=> true,
-	)
-);
-
-/* Custom data fields */
-add_action('admin_init', 'admin_init');
- 
-// add_meta_box( $id, $title, $callback, $page, $context, $priority );
-function admin_init(){
-  add_meta_box('datos_producto', 'Datos del producto', 'producto_meta', 'producto', 'normal', 'low');
-}
- 
-function producto_meta() {
-	global $post;
-	$custom 			= get_post_custom($post->ID);
-	$precio_original 	= $custom['precio_original'][0];
-	
-	?>
-	
-	<p><label>Precio original</label><br />
-	<input type=\"text\" name=\"precio_original\" value=\"<?php echo $precio_original; ?>\" /></p>
-	
-	<?php
-}
-
-/* Save "$POST_TYPE" */
-function save_producto(){
-  global $post;
- 
-  update_post_meta($post->ID, 'precio_original', $_POST['precio_original']);
-
-}
-add_action('save_post', 'save_producto');" > "$THEME_PATH/custom/$POST_TYPE.php"
+		'name' 					=> _x( 'Categories', 'taxonomy general name' ),
+		'label' 				=> __( 'Categories' ), 
+		'singular_label' 		=> 'Category', 
+		'rewrite' 				=> true
+));" > "$THEME_PATH/$DIR_POST_TYPES/$POST_TYPE.php"
 
 }
