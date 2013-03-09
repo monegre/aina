@@ -21,11 +21,17 @@ Launch Terminal and type `aina [command]`
 1. Create a new WordPress complete installation
 `$ aina wp install`
 
-2. Create a new [X] project from a code repo
+2. Generate a WordPress Post Type for your theme
+`$ aina wp generate -pt`
+
+3. Create a new [X] project from a code repo
 `$ aina new [repo]`
 
-3. Visit some website
+Please note that you must have a repo in a `_new` directory within Aina. Example: ~/aina/_new/wordpress
+
+4. Visit some website
 `$ aina go example.com`
 
-### Contribute
-Wanna contribute or tell me something about it? Either send me an email or open an issue. I'll be glad to hear from you.
+Contribute
+----------
+Aina is my first bash script, so it might be clumsy. Wanna contribute or help me imporve it? Either send me an email or open an issue. I'll be glad to hear from you.
