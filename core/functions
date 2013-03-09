@@ -34,3 +34,12 @@ file_exists() {
 start_server(){
 	open -a mamp
 }
+
+#
+# Returns string with first letter capitalized
+#
+ucfirst(){
+	local GO=$1
+	local RETURN="$(tr '[:lower:]' '[:upper:]' <<< ${GO:0:1})${GO:1}"
+	echo $RETURN 
+}
