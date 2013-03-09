@@ -2,7 +2,7 @@
 
 # Variables
 
-AINA_VERSION="0.1"
+AINA_VERSION="0.1.2"
 
 # Repos
 app_tb="bootstrap";
