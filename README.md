@@ -17,6 +17,8 @@ Still working on it.
 ### How to use
 Launch Terminal and type `aina [command]`
 
+TODO: write list of current commands!
+
 ### Working examples
 1. Create a new WordPress complete installation
 `$ aina wp install`
